@@ -19846,13 +19846,10 @@ __webpack_require__.r(__webpack_exports__);
       savingSelected: false,
       savingRemaining: 0,
       selectingViewOption: true,
-      secondsUntilRateLimitResets: 60,
       viewingProvider: null
     };
   },
   mounted: function mounted() {
-    var _this = this;
-
     this.pagination = new _scripts_pagination_js__WEBPACK_IMPORTED_MODULE_0__["default"]('providers', '/api/cqc/providers', 30, [{
       name: 'localOnly',
       value: false
@@ -19860,13 +19857,6 @@ __webpack_require__.r(__webpack_exports__);
       name: 'orderBy',
       value: null
     }]);
-    setInterval(function () {
-      if (_this.secondsUntilRateLimitResets > 0) {
-        _this.secondsUntilRateLimitResets--;
-      } else {
-        _this.secondsUntilRateLimitResets = 60;
-      }
-    }, 1000);
     this.pagination.getPage();
   },
   methods: {
@@ -19885,11 +19875,11 @@ __webpack_require__.r(__webpack_exports__);
       this.pagination.getPage();
     },
     toggleLocalOnly: function toggleLocalOnly() {
-      var _this2 = this;
+      var _this = this;
 
       this.pagination.opts.map(function (key, index) {
         if (key.name == 'localOnly') {
-          _this2.pagination.opts[index].value = !_this2.pagination.opts[index].value;
+          _this.pagination.opts[index].value = !_this.pagination.opts[index].value;
         }
       });
       var localOnlyVal = this.pagination.opts.find(function (opt) {
@@ -19910,12 +19900,12 @@ __webpack_require__.r(__webpack_exports__);
       this.pagination.setPage(1);
     },
     saveProvider: function saveProvider(providerId) {
-      var _this3 = this;
+      var _this2 = this;
 
       axios.get('/api/cqc/providers/' + providerId).then(function (response) {
-        _this3.pagination.rateLimit = response.headers['x-ratelimit-remaining'];
+        _this2.pagination.rateLimit = response.headers['x-ratelimit-remaining'];
 
-        _this3.pagination.getPage();
+        _this2.pagination.getPage();
       });
     },
     toggleSelected: function toggleSelected(providerId) {
@@ -19930,11 +19920,11 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     selectAll: function selectAll() {
-      var _this4 = this;
+      var _this3 = this;
 
       this.pagination.data.map(function (provider) {
-        if (!_this4.selected.includes(provider.providerId)) {
-          _this4.selected.push(provider.providerId);
+        if (!_this3.selected.includes(provider.providerId)) {
+          _this3.selected.push(provider.providerId);
         }
       });
     },
@@ -19942,28 +19932,28 @@ __webpack_require__.r(__webpack_exports__);
       this.selected = [];
     },
     saveSelected: function saveSelected() {
-      var _this5 = this;
+      var _this4 = this;
 
       this.savingSelected = true;
       this.savingRemaining = this.selected.length;
       this.selected.forEach(function (providerId) {
-        _this5.pagination.rateLimit--;
+        _this4.pagination.rateLimit--;
 
-        _this5.saveSelectedProvider(providerId).then(function () {
-          _this5.savingRemaining--;
+        _this4.saveSelectedProvider(providerId).then(function () {
+          _this4.savingRemaining--;
 
-          if (_this5.savingRemaining == 0) {
-            _this5.selected = [];
+          if (_this4.savingRemaining == 0) {
+            _this4.selected = [];
 
-            _this5.pagination.getPage();
+            _this4.pagination.getPage();
 
-            _this5.savingSelected = false;
+            _this4.savingSelected = false;
           }
         });
       });
     },
     saveSelectedProvider: function saveSelectedProvider(providerId) {
-      return axios.get('/api/cqc/providers/' + providerId);
+      return axios.get('/api/cqc/providers/' + providerId + '?forceUpdate=true');
     },
     viewProvider: function viewProvider(providerId) {
       this.viewingProvider = providerId;
@@ -20666,7 +20656,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "w-full h-2 bg-blue-900 rounded-lg appearance-none cursor-pointer"
   }, null, 40
   /* PROPS, HYDRATE_EVENTS */
-  , _hoisted_80), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_81, [_hoisted_82, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(this.pagination.rateLimit + " / 60") + " | ~" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(this.secondsUntilRateLimitResets) + "s until reset", 1
+  , _hoisted_80), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_81, [_hoisted_82, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(this.pagination.rateLimit + " / 2000"), 1
   /* TEXT */
   )])])]), this.viewingProvider !== null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_provider_display, {
     key: 0,

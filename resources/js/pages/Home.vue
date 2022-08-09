@@ -158,7 +158,7 @@
             <input id="default-range" type="range" :value="this.pagination.perPage" @change="event => { this.pagination.perPage = event.target.value; this.pagination.getPage() }" min="10" max="500" step="10" class="w-full h-2 bg-blue-900 rounded-lg appearance-none cursor-pointer">
             <div class="flex items-center justify-between mt-4 text-sm font-bold">
                 <h2>Rate Limit Remaining</h2>
-                <h2>{{ this.pagination.rateLimit + " / 60" }} | ~{{ this.secondsUntilRateLimitResets }}s until reset</h2>
+                <h2>{{ this.pagination.rateLimit + " / 2000" }}</h2>
             </div>
         </div>            
     </div>
@@ -183,7 +183,6 @@
                 savingSelected: false,
                 savingRemaining: 0,
                 selectingViewOption: true,
-                secondsUntilRateLimitResets: 60,
 
                 viewingProvider: null,
             }
@@ -199,14 +198,6 @@
                     value: null
                 }
             ]);
-
-            setInterval(() => {
-                if (this.secondsUntilRateLimitResets > 0) {
-                    this.secondsUntilRateLimitResets--;
-                } else {
-                    this.secondsUntilRateLimitResets = 60;
-                }
-            }, 1000);
 
             this.pagination.getPage();
         },
@@ -289,7 +280,7 @@
                 })
             },
             saveSelectedProvider(providerId){
-                return axios.get('/api/cqc/providers/' + providerId);
+                return axios.get('/api/cqc/providers/' + providerId + '?forceUpdate=true');
             },
             viewProvider(providerId){
                 this.viewingProvider = providerId;
